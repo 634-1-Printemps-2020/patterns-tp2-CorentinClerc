@@ -23,14 +23,21 @@ public class Game {
      * @param player le nouveau joueur
      */
     public void addPlayer(Player player) {
-      // TODO: Votre code ici
+        history.put(player, new ArrayList<>());
     }
 
     /**
-     * Faire joueur tous les joueurs et stocker chaque partie dans history
+     * Faire jouer tous les joueurs et stocker chaque partie dans history
      */
     public void play() {
-      // TODO: Votre code ici
+        coin = Coin.getInstance();
+        rules = Rules.getInstance();
+        for (Player p: history.keySet()) {
+            while(!rules.checkWin(history.get(p))) {
+                p.play(coin);
+                history.get(p).add(coin.getState());
+            }
+        }
     }
 
     /**
@@ -39,8 +46,23 @@ public class Game {
      * @return Statistics
      */
     public Statistics getStatistics() {
-      // TODO: Votre code ici
-      return null;
+        int totalMoves = 0;
+        int minMoves = Integer.MAX_VALUE;
+        int maxMoves = 0;
+        float avgMoves = 0f;
+        for(Player p : history.keySet()){
+              // statsAverageToWin
+            List<CoinState> currentPlayerList = getSpecificHistory(p);
+            totalMoves += currentPlayerList.size();
+            if(currentPlayerList.size() < minMoves){
+                minMoves = currentPlayerList.size();
+            }
+            if(currentPlayerList.size() > maxMoves){
+                maxMoves = currentPlayerList.size();
+            }
+        }
+        avgMoves = (float)totalMoves / (float)history.keySet().size();
+        return new Statistics(avgMoves, minMoves, maxMoves, totalMoves);
     }
 
     /**
@@ -49,8 +71,7 @@ public class Game {
      * @return Map contenant chaque joueur et la liste des ses lancers
      */
     public Map<Player, List<CoinState>> getHistory() {
-      // TODO: Votre code ici
-      return null;
+      return history;
     }
 
 
@@ -61,8 +82,7 @@ public class Game {
      * @return la liste des lancers d'un joueur
      */
     public List<CoinState> getSpecificHistory(Player player) {
-      // TODO: Votre code ici
-      return null;
+      return history.get(player);
     }
 
 }
